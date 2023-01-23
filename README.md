@@ -13,5 +13,3 @@ if you are on a on unix systems. If you are using Windows, you can type:
 ```
 python -m anomaly
 ```
-
-This is a test line. You can ignore it.
