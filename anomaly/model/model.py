@@ -6,7 +6,7 @@ class model:
         self.inputField = ''
         self.controllerHandle = controllerHandle
         self.twoParameterOperators = ['+','-','*','/','swap','^']
-        self.singleParameterOperators = ['plusminus', 'sin','cos','tan','ln', 'arcsin', 'arccos', 'arctan']
+        self.singleParameterOperators = ['plusminus', 'sin','cos','tan','ln', 'arcsin', 'arccos', 'arctan', 'e']
         self.validNumbers = ['1','2','3','4','5', '6','7','8', '9', '0', '.']
 
 
@@ -102,6 +102,8 @@ class model:
                             self.stack[-1] = self.arccos(self.stack[-1])
                         elif value == 'arctan':
                             self.stack[-1] = self.arctan(self.stack[-1])
+                        elif value == 'e':
+                            self.stack[-1] = math.exp(self.stack[-1])
                     except ZeroDivisionError:
                         pass
                     except ValueError:

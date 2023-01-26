@@ -1,117 +1,24 @@
-from PyQt6.QtWidgets import QGridLayout, QWidget, QPushButton, QTextEdit
-from PyQt6.QtGui import QKeySequence, QShortcut
+from PyQt6.QtWidgets import QGridLayout, QPushButton, QTextEdit
 
+class UI:
+    def __init__(self, parentHandle, layoutHandle, controllerHandle) -> None:
+        self.layoutHandle = layoutHandle
+        self.parentHandle = parentHandle
+        self.controllerHandle = controllerHandle
+        self.createStackUI(self.layoutHandle)
+        self.createButtonGrid(self.layoutHandle)
 
-class viewWindow(QWidget):
-    def __init__(self, parent):
-        super().__init__()
-        self.shiftOn = False
-        self.welcomeMsg = ''# """Welcome to Anomaly\nA basic RPN calculator"""
-        self.controllerHandle = parent
-        self.resize(400,600)
-        self.setWindowTitle("Anomaly Calc")
-        self.updateStyle()
-        self.loadShortcuts()
-        self.layout = QGridLayout()
-        self.setLayout(self.layout)
-        self.UI()
-        self.shiftHeld = False
-
-    def shiftClicked(self):
-        if self.shiftOn == False:
-            self.buttonShift.setStyleSheet("""
-            background-color: {0};
-            color: {1};
-                """.format(self.controllerHandle.fgColor, self.controllerHandle.bgColor))
-            self.shiftOn = True
-            self.buttonSin.setText("asin")        
-            self.buttonSin.disconnect()
-            self.buttonSin.clicked.connect(lambda:self.controllerHandle.operator("arcsin"))
-            self.buttonCos.setText("acos")
-            self.buttonCos.disconnect()        
-            self.buttonCos.clicked.connect(lambda:self.controllerHandle.operator("arccos"))
-            self.buttonTan.setText("atan")
-            self.buttonTan.disconnect()        
-            self.buttonTan.clicked.connect(lambda:self.controllerHandle.operator("arctan"))
-        elif self.shiftOn == True:
-            self.buttonShift.setStyleSheet("""
-            background-color: {0};
-            color: {1};
-            """.format(self.controllerHandle.bgColor, self.controllerHandle.fgColor))
-            self.shiftOn = False
-            self.buttonSin.setText("sin")
-            self.buttonSin.disconnect()        
-            self.buttonSin.clicked.connect(lambda:self.controllerHandle.operator("sin"))
-            self.buttonCos.setText("cos")
-            self.buttonCos.disconnect()        
-            self.buttonCos.clicked.connect(lambda:self.controllerHandle.operator("cos"))
-            self.buttonTan.setText("tan")
-            self.buttonTan.disconnect()        
-            self.buttonTan.clicked.connect(lambda:self.controllerHandle.operator("tan"))
-
-    def degreeMode(self):
-        if self.controllerHandle.trigMode == 'radians':
-            self.controllerHandle.trigMode = 'degrees'
-            self.modeButton.setText('Deg')
-        elif self.controllerHandle.trigMode == 'degrees':
-            self.controllerHandle.trigMode = 'radians'
-            self.modeButton.setText('Rad')
-
-    def newShortcut(self, dict):
-        anObject = QShortcut(QKeySequence(dict['shortcut']), self)
-        anObject.activated.connect(lambda:self.controllerHandle.appendNumber(dict['num']))
-        return anObject
-
-    def loadShortcuts(self):
-        self.shortcuts = []
-        for i in self.controllerHandle.shortcuts:
-            self.shortcuts.append(self.newShortcut(i))
-
-    def updateStyle(self):
-        if self.controllerHandle.hasColors == False:
-            self.setStyleSheet('')
-        else:
-            self.setStyleSheet("""
-            QWidget {{
-                background-color: {0};
-                color: {1};
-            }}
-            QPushButton {{
-                background-color: {0};
-                color: {1};
-            }}
-            QTextEdit {{
-                border: 2px solid {2};
-                border-radius: 3px;
-            }}
-            QPushButton {{
-                font-size: 18px;
-                background-color: {0};
-                color: {1}
-            }}
-            """.format(self.controllerHandle.bgColor, self.controllerHandle.fgColor, self.controllerHandle.accentColor))
-        self.update()
-
-    def buildStackString(self):
-        self.stackString = ''
-        for i in self.controllerHandle.stack.stack:
-            self.stackString += '\u2E30 ' + str(i) + '\n'
-        self.stackString += '\u2E30 ' + self.controllerHandle.stack.inputField
-
-    def updateStack(self):
-        self.buildStackString()
-        self.stackValue.setText(self.stackString)
-
-    def UI(self):
+    def createStackUI(self, layoutHandle):    
         self.stackValue = QTextEdit()
         self.stackValue.setReadOnly(True)
         self.stackValue.ensureCursorVisible()
         self.stackFont = self.stackValue.font()
         self.stackFont.setPointSize(18)
         self.stackValue.setFont(self.stackFont)
-        self.stackValue.setText(self.welcomeMsg)
-        self.layout.addWidget(self.stackValue,0,0)
-
+        self.stackValue.setText(self.parentHandle.welcomeMsg)
+        layoutHandle.addWidget(self.stackValue,0,0)
+        
+    def createButtonGrid(self, layoutHandle):       
         self.buttonGrid = QGridLayout()
         self.button0 = QPushButton("0")
         self.button0.clicked.connect(lambda:self.controllerHandle.appendNumber("0"))
@@ -160,7 +67,7 @@ class viewWindow(QWidget):
         self.buttonClear = QPushButton("C")
         self.buttonClear.clicked.connect(lambda:self.controllerHandle.clearStack())
         self.buttonShift = QPushButton("\u2191")
-        self.buttonShift.clicked.connect(lambda:self.shiftClicked())
+        self.buttonShift.clicked.connect(lambda:self.parentHandle.shiftClicked())
         self.buttonLn = QPushButton("ln")
         self.buttonLn.clicked.connect(lambda:self.controllerHandle.operator("ln"))
         self.buttonExp = QPushButton("y\u02E3")
@@ -168,8 +75,10 @@ class viewWindow(QWidget):
         self.buttonBackspace = QPushButton("\u2190")
         self.buttonBackspace.clicked.connect(lambda:self.controllerHandle.delete())
         self.modeButton = QPushButton(self.controllerHandle.trigMode)
-        self.modeButton.clicked.connect(lambda:self.degreeMode())
-
+        self.modeButton.clicked.connect(lambda:self.parentHandle.degreeMode())
+        self.settingsButton = QPushButton("\u2699")
+        self.hyperButton = QPushButton("Hyper")
+        self.saveButton = QPushButton("Save")
 
         self.buttonGrid.addWidget(self.button0,7,0)
         self.buttonGrid.addWidget(self.buttonDot,7,1)
@@ -199,5 +108,8 @@ class viewWindow(QWidget):
         self.buttonGrid.addWidget(self.buttonExp, 1, 2)
         self.buttonGrid.addWidget(self.buttonBackspace, 1, 3)
         self.buttonGrid.addWidget(self.modeButton, 0, 0)
+        self.buttonGrid.addWidget(self.settingsButton,0, 3)
+        self.buttonGrid.addWidget(self.hyperButton, 0, 1)
+        self.buttonGrid.addWidget(self.saveButton, 0, 2)
 
-        self.layout.addLayout(self.buttonGrid, 1, 0, 2,1)
+        layoutHandle.addLayout(self.buttonGrid, 1, 0, 2,1)

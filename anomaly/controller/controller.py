@@ -3,7 +3,7 @@ import tomli
 import sys
 from anomaly.common import useful
 from anomaly.model import model
-from anomaly.gui import window
+from anomaly.UI import window
 
 class controller:
     def __init__(self):
