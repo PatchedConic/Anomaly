@@ -41,7 +41,7 @@ foreground-color = "#5c6a72"
 accent-color = "#f85552"
 
 [mode]
-angle = "degrees"
+angle = "radians"
 
 # A list of configurable keyboard shorctus
 
