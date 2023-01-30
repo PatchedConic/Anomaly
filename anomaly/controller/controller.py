@@ -5,14 +5,14 @@ from anomaly.common import useful
 from anomaly.model import model
 from anomaly.UI import window
 
-class controller:
+class controller:   # define the controller class.
     def __init__(self):
-        self.startup()
-        self.stack = model.model(self)
-        self.application = QApplication(sys.argv)
-        self.application.setStyleSheet("""QPushButton { font-size: 18px;}""")
-        self.window = window.viewWindow(self)
-        self.window.show()
+        self.startup()  # run the startup method that intializes various parameters of the controller, view and model
+        self.stack = model.model(self)  # create an instance of the model that runs the mathematical logic
+        self.application = QApplication(sys.argv)   # create a PyQt application
+        self.application.setStyleSheet("""QPushButton { font-size: 18px;}""")   # I think this is junk and needs to be removed?
+        self.window = window.viewWindow(self)   # create an instance of the main view objects
+        self.window.show()  # show the main window
         sys.exit(self.application.exec())
     
     def startup(self):
@@ -35,20 +35,24 @@ class controller:
                 self.shortcuts = []
             self.set_colorscheme(self.configFile["colors"]["colorscheme"])
     
-    def update(self):
-        self.window.updateStack()
+    def update(self):   # updates the window's stack display
+        self.window.updateStack()   # calls the window's method that updates it's stack
     
-    def appendNumber(self, value):
-        if value in self.stack.validNumbers:
-            self.stack.appendNumber(value)
-            self.update()
-        elif value in self.stack.singleParameterOperators or value in self.stack.twoParameterOperators:
-            self.operator(value)
-        elif value == 'backspace':
-            self.delete()
-        elif value == 'clear':
-            self.clearStack()
-        elif value == 'enter':
+    def appendNumber(self, value):  # append a number to the stack, or perform other logical actions
+        if value in self.stack.validNumbers:    # checks to see if the number passed to the function is a valid number
+            self.stack.appendNumber(value)  # tells the model to append a number to it's input field
+            self.update()   # update the window to reflect the changes
+
+        elif value in self.stack.singleParameterOperators or value in self.stack.twoParameterOperators: # checks to see if the parameter is a valid operator
+            self.operator(value)    # passes the parameter to the operator function
+
+        elif value == 'backspace':  # checks to see if the parameter is a backspace
+            self.delete()   # calls the backspace function
+
+        elif value == 'clear':  # checks to see if the parameter is a clear stack command
+            self.clearStack()   # calls the clear stack function
+
+        elif value == 'enter':  # 
             self.enterNumber()
         elif value == 'pi':
             self.addPi()
