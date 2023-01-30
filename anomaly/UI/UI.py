@@ -1,14 +1,16 @@
 from PyQt6.QtWidgets import QGridLayout, QPushButton, QTextEdit
+from anomaly.UI.settings import SettingsDialog
 
 class UI:
     def __init__(self, parentHandle, layoutHandle, controllerHandle) -> None:
         self.layoutHandle = layoutHandle
         self.parentHandle = parentHandle
         self.controllerHandle = controllerHandle
-        self.createStackUI(self.layoutHandle)
-        self.createButtonGrid(self.layoutHandle)
+        self.settings_dialog = SettingsDialog(self.controllerHandle)
+        self.create_stackUI(self.layoutHandle)
+        self.create_buttonGrid(self.layoutHandle)
 
-    def createStackUI(self, layoutHandle):    
+    def create_stackUI(self, layoutHandle):    
         self.stackValue = QTextEdit()
         self.stackValue.setReadOnly(True)
         self.stackValue.ensureCursorVisible()
@@ -18,7 +20,7 @@ class UI:
         self.stackValue.setText(self.parentHandle.welcomeMsg)
         layoutHandle.addWidget(self.stackValue,0,0)
         
-    def createButtonGrid(self, layoutHandle):       
+    def create_buttonGrid(self, layoutHandle):       
         self.buttonGrid = QGridLayout()
         self.button0 = QPushButton("0")
         self.button0.clicked.connect(lambda:self.controllerHandle.appendNumber("0"))
@@ -67,18 +69,23 @@ class UI:
         self.buttonClear = QPushButton("C")
         self.buttonClear.clicked.connect(lambda:self.controllerHandle.clearStack())
         self.buttonShift = QPushButton("\u2191")
-        self.buttonShift.clicked.connect(lambda:self.parentHandle.shiftClicked())
+        self.buttonShift.clicked.connect(lambda:self.shiftClicked())
+        self.buttonShift.clicked = False
         self.buttonLn = QPushButton("ln")
         self.buttonLn.clicked.connect(lambda:self.controllerHandle.operator("ln"))
         self.buttonExp = QPushButton("y\u02E3")
         self.buttonExp.clicked.connect(lambda:self.controllerHandle.operator("^"))
         self.buttonBackspace = QPushButton("\u2190")
         self.buttonBackspace.clicked.connect(lambda:self.controllerHandle.delete())
-        self.modeButton = QPushButton(self.controllerHandle.trigMode)
-        self.modeButton.clicked.connect(lambda:self.parentHandle.degreeMode())
-        self.settingsButton = QPushButton("\u2699")
-        self.hyperButton = QPushButton("Hyper")
-        self.saveButton = QPushButton("Save")
+        self.button_mode = QPushButton()
+        self.update_mode()
+        self.button_mode.clicked.connect(lambda:self.parentHandle.degreeMode())
+        self.settingsButton = QPushButton("\U00002699")
+        self.settingsButton.clicked.connect(lambda:self.settings_dialog.show())
+        self.button_inv = QPushButton("1/x")
+        self.button_inv.clicked.connect(lambda:self.controllerHandle.operator('inv'))
+        self.log_button = QPushButton("Log\u2081\u2080 X")
+        self.log_button.clicked.connect(lambda:self.controllerHandle.operator('log'))
 
         self.buttonGrid.addWidget(self.button0,7,0)
         self.buttonGrid.addWidget(self.buttonDot,7,1)
@@ -107,9 +114,60 @@ class UI:
         self.buttonGrid.addWidget(self.buttonLn, 1, 1)
         self.buttonGrid.addWidget(self.buttonExp, 1, 2)
         self.buttonGrid.addWidget(self.buttonBackspace, 1, 3)
-        self.buttonGrid.addWidget(self.modeButton, 0, 0)
+        self.buttonGrid.addWidget(self.button_mode, 0, 0)
         self.buttonGrid.addWidget(self.settingsButton,0, 3)
-        self.buttonGrid.addWidget(self.hyperButton, 0, 1)
-        self.buttonGrid.addWidget(self.saveButton, 0, 2)
+        self.buttonGrid.addWidget(self.button_inv, 0, 1)
+        self.buttonGrid.addWidget(self.log_button, 0, 2)
 
         layoutHandle.addLayout(self.buttonGrid, 1, 0, 2,1)
+    def update_mode(self):
+        if self.controllerHandle.trigMode == "radians":
+            self.button_mode.setText("Rad")
+        elif self.controllerHandle.trigMode == "degrees":
+            self.button_mode.setText("Deg")
+        else:
+            pass
+
+    def shiftClicked(self):
+        if self.buttonShift.clicked == False:
+            self.buttonShift.setStyleSheet("""
+            background-color: {0};
+            color: {1};
+                """.format(self.controllerHandle.fgColor, self.controllerHandle.bgColor))
+            self.buttonShift.clicked = True
+            self.buttonSin.setText("asin")        
+            self.buttonSin.disconnect()
+            self.buttonSin.clicked.connect(lambda:self.controllerHandle.operator("arcsin"))
+            self.buttonCos.setText("acos")
+            self.buttonCos.disconnect()        
+            self.buttonCos.clicked.connect(lambda:self.controllerHandle.operator("arccos"))
+            self.buttonTan.setText("atan")
+            self.buttonTan.disconnect()        
+            self.buttonTan.clicked.connect(lambda:self.controllerHandle.operator("arctan"))
+            self.buttonLn.setText("e\u02E3")
+            self.buttonLn.disconnect()
+            self.buttonLn.clicked.connect(lambda:self.controllerHandle.operator("e"))
+            self.buttonExp.disconnect()
+            self.buttonExp.setText("\u02E3\u221Ay")
+            self.buttonExp.clicked.connect(lambda:self.controllerHandle.operator("root"))
+        elif self.buttonShift.clicked == True:
+            self.buttonShift.setStyleSheet("""
+            background-color: {0};
+            color: {1};
+            """.format(self.controllerHandle.bgColor, self.controllerHandle.fgColor))
+            self.buttonShift.clicked = False
+            self.buttonSin.setText("sin")
+            self.buttonSin.disconnect()        
+            self.buttonSin.clicked.connect(lambda:self.controllerHandle.operator("sin"))
+            self.buttonCos.setText("cos")
+            self.buttonCos.disconnect()        
+            self.buttonCos.clicked.connect(lambda:self.controllerHandle.operator("cos"))
+            self.buttonTan.setText("tan")
+            self.buttonTan.disconnect()        
+            self.buttonTan.clicked.connect(lambda:self.controllerHandle.operator("tan"))
+            self.buttonLn.disconnect()
+            self.buttonLn.setText("ln")
+            self.buttonLn.clicked.connect(lambda:self.controllerHandle.operator("ln"))
+            self.buttonExp.disconnect()
+            self.buttonExp.setText("y\u02E3")
+            self.buttonExp.clicked.connect(lambda:self.controllerHandle.operator("^"))            

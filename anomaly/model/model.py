@@ -5,8 +5,8 @@ class model:
         self.stack = []
         self.inputField = ''
         self.controllerHandle = controllerHandle
-        self.twoParameterOperators = ['+','-','*','/','swap','^']
-        self.singleParameterOperators = ['plusminus', 'sin','cos','tan','ln', 'arcsin', 'arccos', 'arctan', 'e']
+        self.twoParameterOperators = ['+','-','*','/','swap','^', 'root']
+        self.singleParameterOperators = ['plusminus', 'sin','cos','tan','ln', 'arcsin', 'arccos', 'arctan', 'e', 'inv', 'log']
         self.validNumbers = ['1','2','3','4','5', '6','7','8', '9', '0', '.']
 
 
@@ -45,7 +45,10 @@ class model:
             else:
                 return math.sin(value)
         elif self.controllerHandle.trigMode == "degrees":
-            return math.sin(value*2*math.pi/360)
+            if value % 90 == 0:
+                return 0
+            else:
+                return math.sin(value*2*math.pi/360)
 
     def cos(self, value):
         if self.controllerHandle.trigMode == "radians":
@@ -104,6 +107,10 @@ class model:
                             self.stack[-1] = self.arctan(self.stack[-1])
                         elif value == 'e':
                             self.stack[-1] = math.exp(self.stack[-1])
+                        elif value == 'log':
+                            self.stack[-1] = math.log(self.stack[-1], 10)
+                        elif value == 'inv':
+                            self.stack[-1] = 1/self.stack[-1]
                     except ZeroDivisionError:
                         pass
                     except ValueError:
@@ -145,6 +152,13 @@ class model:
                             self.valueX = self.stack.pop()
                             self.valueY = self.stack.pop()
                             self.stack.append(math.pow(self.valueY,self.valueX))
+                        elif value == 'root':
+                            self.valueX = self.stack.pop()
+                            self.valueY = self.stack.pop()
+                            if self.valueY < 0:
+                                raise ZeroDivisionError
+                            self.stack.append(math.pow(self.valueY, float(1/self.valueX)))
+
                     except ZeroDivisionError:
                         pass
                 else:

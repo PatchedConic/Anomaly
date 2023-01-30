@@ -5,7 +5,6 @@ from anomaly.UI import UI
 class viewWindow(QWidget):
     def __init__(self, parent):
         super().__init__()
-        self.shiftOn = False
         self.welcomeMsg = ''# """Welcome to Anomaly\nA basic RPN calculator"""
         self.controllerHandle = parent
         self.resize(400,600)
@@ -15,53 +14,15 @@ class viewWindow(QWidget):
         self.layout = QGridLayout()
         self.setLayout(self.layout)
         self.UI = UI.UI(self, self.layout, self.controllerHandle)
-        self.shiftHeld = False
 
-    def shiftClicked(self):
-        if self.shiftOn == False:
-            self.UI.buttonShift.setStyleSheet("""
-            background-color: {0};
-            color: {1};
-                """.format(self.controllerHandle.fgColor, self.controllerHandle.bgColor))
-            self.shiftOn = True
-            self.UI.buttonSin.setText("asin")        
-            self.UI.buttonSin.disconnect()
-            self.UI.buttonSin.clicked.connect(lambda:self.controllerHandle.operator("arcsin"))
-            self.UI.buttonCos.setText("acos")
-            self.UI.buttonCos.disconnect()        
-            self.UI.buttonCos.clicked.connect(lambda:self.controllerHandle.operator("arccos"))
-            self.UI.buttonTan.setText("atan")
-            self.UI.buttonTan.disconnect()        
-            self.UI.buttonTan.clicked.connect(lambda:self.controllerHandle.operator("arctan"))
-            self.UI.buttonLn.setText("e\u02E3")
-            self.UI.buttonLn.disconnect()
-            self.UI.buttonLn.clicked.connect(lambda:self.controllerHandle.operator("e"))
-        elif self.shiftOn == True:
-            self.UI.buttonShift.setStyleSheet("""
-            background-color: {0};
-            color: {1};
-            """.format(self.controllerHandle.bgColor, self.controllerHandle.fgColor))
-            self.shiftOn = False
-            self.UI.buttonSin.setText("sin")
-            self.UI.buttonSin.disconnect()        
-            self.UI.buttonSin.clicked.connect(lambda:self.controllerHandle.operator("sin"))
-            self.UI.buttonCos.setText("cos")
-            self.UI.buttonCos.disconnect()        
-            self.UI.buttonCos.clicked.connect(lambda:self.controllerHandle.operator("cos"))
-            self.UI.buttonTan.setText("tan")
-            self.UI.buttonTan.disconnect()        
-            self.UI.buttonTan.clicked.connect(lambda:self.controllerHandle.operator("tan"))
-            self.UI.buttonLn.disconnect()
-            self.UI.buttonLn.setText("ln")
-            self.UI.buttonLn.clicked.connect(lambda:self.controllerHandle.operator("ln"))
-
+    
     def degreeMode(self):
         if self.controllerHandle.trigMode == 'radians':
             self.controllerHandle.trigMode = 'degrees'
-            self.UI.modeButton.setText('Deg')
+            self.UI.update_mode()
         elif self.controllerHandle.trigMode == 'degrees':
             self.controllerHandle.trigMode = 'radians'
-            self.UI.modeButton.setText('Rad')
+            self.UI.update_mode()
 
     def newShortcut(self, dict):
         anObject = QShortcut(QKeySequence(dict['shortcut']), self)

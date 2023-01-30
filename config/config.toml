@@ -2,39 +2,39 @@
 
 [colors]
 
-colorscheme= "everforest-dark"
+colorscheme= "Everforest Dark"
 
-[colors.gruvbox-dark]
+[colorscheme.gruvbox-dark]
 name = "Gruvbox Dark"
 background-color = "#282828"
 foreground-color = "#ebdbb2"
 accent-color = "#d65d0e"
 
-[colors.gruvbox-light]
+[colorscheme.gruvbox-light]
 name = "Gruvbox Light"
 background-color = "#fbf1c7"
 foreground-color = "#3c3836"
 accent-color = "#d65d0e"
 
-[colors.papercolor-dark]
+[colorscheme.papercolor-dark]
 name = "Papercolor Dark"
 background-color = "#1c1c1c"
 foreground-color = "#eeeeee"
 accent-color = "#af005f"
 
-[colors.papercolor-light]
+[colorscheme.papercolor-light]
 name = "Papercolor Light"
 background-color = "#eeeeee"
 foreground-color = "#1c1c1c"
 accent-color = "#af0000"
 
-[colors.everforest-dark]
+[colorscheme.everforest-dark]
 name = "Everforest Dark"
 background-color = "#1e2326"
 foreground-color = "#d3c6aa"
 accent-color = "#e67e80"
 
-[colors.everforest-light]
+[colorscheme.everforest-light]
 name = "Everforest Light"
 background-color = "#f2efdf"
 foreground-color = "#5c6a72"
