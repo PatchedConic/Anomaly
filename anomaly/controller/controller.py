@@ -34,8 +34,10 @@ class controller:
             except KeyError:
                 self.shortcuts = []
             self.set_colorscheme(self.configFile["colors"]["colorscheme"])
+    
     def update(self):
         self.window.updateStack()
+    
     def appendNumber(self, value):
         if value in self.stack.validNumbers:
             self.stack.appendNumber(value)
@@ -51,37 +53,45 @@ class controller:
         elif value == 'pi':
             self.addPi()
 
+    def set_mode(self, trig_mode):
+        self.trigMode = trig_mode
+    
     def enterNumber(self):
         self.stack.appendToStack()
         self.update()
+    
     def delete(self):
         self.stack.delete()
         self.update()
+    
     def operator(self, value):
         self.stack.operator(value)
         self.update()
+    
     def addPi(self):
         self.stack.addPi()
         self.update()
+    
     def clearStack(self):
         self.stack.clearStack()
         self.update()
+    
     def set_colorscheme(self, color_name):
-        try:
-            self.colorscheme = self.configFile['colors']['colorscheme']
-            if self.colorscheme == "default":
-                self.hasColors = False
-            else:
-                for colorscheme in self.configFile['colorscheme']:
-                    if self.configFile['colorscheme'][colorscheme]['name'] == color_name:
-                        self.bgColor = self.configFile['colorscheme'][self.colorscheme]['background-color']
-                        self.fgColor = self.configFile['colorscheme'][self.colorscheme]['foreground-color']
-                        self.accentColor = self.configFile['colorscheme'][self.colorscheme]['accent-color']            
-        except KeyError:
+
+        self.colorscheme = self.configFile['colors']['colorscheme']
+        if self.colorscheme == "default":
             self.hasColors = False
+        else:
+            for colorscheme in self.configFile['colorscheme']:
+                if self.configFile['colorscheme'][colorscheme]['name'] == color_name:
+                    self.bgColor = self.configFile['colorscheme'][colorscheme]['background-color']
+                    self.fgColor = self.configFile['colorscheme'][colorscheme]['foreground-color']
+                    self.accentColor = self.configFile['colorscheme'][colorscheme]['accent-color']
+                else:       
+                    pass
         try:
             self.window.updateStyle()
-        except:
+        except AttributeError:
             pass
 
     def get_colors(self):
