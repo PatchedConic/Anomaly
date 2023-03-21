@@ -2,39 +2,39 @@ from os.path import exists
 WELCOMEMSG = "Simple Anomaly"
 
 DARKMODE = """QTextEdit {
-        border: 2px solid #3c3836;
+        border: 2px solid #585858;
         border-radius: 4px;}
 
         QPushButton {
         font-size: 18px; 
         background-color: transparent; 
         outline: none; 
-        border: 2px solid #3c3836;
+        border: 2px solid #585858;
         border-radius: 4px; 
         margin: 4px;
         padding: 4px;}
 
         QWidget {
-        background-color: #282828;
-        color: #ebdbb2;
+        background-color: #1c1c1c;
+        color: #d0d0d0;
         }"""
 
 LIGHTMODE = """QTextEdit {
-        border: 2px solid #928374;
+        border: 2px solid #878787;
         border-radius: 4px;}
 
         QPushButton {
         font-size: 18px; 
         background-color: transparent; 
         outline: none; 
-        border: 2px solid #928374;
+        border: 2px solid #878787;
         border-radius:4px;
         margin: 4px;
         padding: 4px;}
 
         QWidget {
-        background-color: #f9f5d7;
-        color: #3c3836;
+        background-color: #eeeeee;
+        color: #444444;
         }"""
 
 BUTTONDICT = {
