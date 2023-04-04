@@ -9,7 +9,7 @@ class UI:
         self.controllerHandle = controllerHandle
         self.settings_dialog = SettingsDialog(self.controllerHandle)
         self.create_stackUI(self.layoutHandle)
-        self.buttonGrid = buttons.Buttons(self.layoutHandle, self.controllerHandle, self, parentHandle)
+        self.buttonGrid = buttons.Buttons(self.layoutHandle, self.controllerHandle, parentHandle)
 
     def create_stackUI(self, layoutHandle):    
         self.stackValue = stack.stack(layoutHandle)

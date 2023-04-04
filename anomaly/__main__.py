@@ -1,4 +1,3 @@
-from anomaly.controller import controller
-
-if __name__ == "__main__":
-    applicationController = controller.controller()
+import sys
+from anomaly import entry
+sys.exit(entry.applicationController.application.exec())

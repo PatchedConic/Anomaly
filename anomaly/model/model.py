@@ -6,7 +6,7 @@ class model:
         self.inputField = ''
         self.controllerHandle = controllerHandle
         self.twoParameterOperators = ['+','-','*','/','swap','^', 'root']
-        self.singleParameterOperators = ['plusminus', 'sin','cos','tan','ln', 'arcsin', 'arccos', 'arctan', 'e', 'inv', 'log']
+        self.singleParameterOperators = ['plusminus', 'sin','cos','tan','ln', 'asin', 'acos', 'atan', 'e', 'inv', 'log']
         self.validNumbers = ['1','2','3','4','5', '6','7','8', '9', '0', '.']
 
 
@@ -62,19 +62,19 @@ class model:
         elif self.controllerHandle.trigMode == "degrees":
             return math.tan(value*2*math.pi/360)
     
-    def arcsin(self,value):
+    def asin(self,value):
         if self.controllerHandle.trigMode == 'radians':
             return math.asin(value)
         elif self.controllerHandle.trigMode == 'degrees':
             return math.asin(value)*360/(2*math.pi)
 
-    def arccos(self,value):
+    def acos(self,value):
         if self.controllerHandle.trigMode == 'radians':
             return math.acos(value)
         elif self.controllerHandle.trigMode == 'degrees':
             return math.acos(value)*360/(2*math.pi)
 
-    def arctan(self,value):
+    def atan(self,value):
         if self.controllerHandle.trigMode == 'radians':
             return math.atan(value)
         elif self.controllerHandle.trigMode == 'degrees':
@@ -99,12 +99,12 @@ class model:
                             self.stack[-1] = self.tan(self.stack[-1])
                         elif value == 'ln':
                             self.stack[-1] = math.log(self.stack[-1])
-                        elif value == 'arcsin':
-                            self.stack[-1] = self.arcsin(self.stack[-1])
-                        elif value == 'arccos':
-                            self.stack[-1] = self.arccos(self.stack[-1])
-                        elif value == 'arctan':
-                            self.stack[-1] = self.arctan(self.stack[-1])
+                        elif value == 'asin':
+                            self.stack[-1] = self.asin(self.stack[-1])
+                        elif value == 'acos':
+                            self.stack[-1] = self.acos(self.stack[-1])
+                        elif value == 'atan':
+                            self.stack[-1] = self.atan(self.stack[-1])
                         elif value == 'e':
                             self.stack[-1] = math.exp(self.stack[-1])
                         elif value == 'log':
