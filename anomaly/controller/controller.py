@@ -64,18 +64,10 @@ class controller:   # define the controller class.
             return "Rad"
         else:
             return "Deg"
-
-    # def enterNumber(self):
-    #     self.stack.appendToStack()
-    #     self.update()
     
     def delete(self):
         self.stack.delete()
         self.update()
-    
-    # def operator(self, value):
-    #     self.stack.operator(value)
-    #     self.update()
     
     def addPi(self):
         self.stack.addPi()
