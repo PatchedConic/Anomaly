@@ -20,7 +20,7 @@ class funcButton(QPushButton):
             self.secondaryShortcut = QShortcut(QKeySequence(self.altShortcut), self)
             self.secondaryShortcut.activated.connect(lambda: self.fire(altFunction))
     def fire(self, Value):
-        import anomaly.entry as entry
+        import anomaly.__main__ as entry
         entry.applicationController.append(Value)
     def shift(self):
         if self.shifted == False:
