@@ -21,7 +21,6 @@ class controller:   # define the controller class.
         self.window.updateStack()   # calls the window's method that updates it's stack
     
     def append(self, value):  # append a number to the stack, or perform other logical actions
-        print(value)
         if value == 'return':
             self.stack.appendToStack()
             self.update()
@@ -86,3 +85,5 @@ class controller:   # define the controller class.
             self.mode = "DARKMODE"
         else:
             pass
+    def foo(self):
+        print("bar")

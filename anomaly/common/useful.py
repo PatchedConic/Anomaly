@@ -14,6 +14,10 @@ DARKMODE = """QTextEdit {
         margin: 4px;
         padding: 4px;}
 
+        QPushButton:hover {
+        border:2px solid red;
+        }
+
         QWidget {
         background-color: #1c1c1c;
         color: #d0d0d0;
@@ -31,6 +35,10 @@ LIGHTMODE = """QTextEdit {
         border-radius:4px;
         margin: 4px;
         padding: 4px;}
+
+        QPushButton:hover {
+        border: 2px solid red;
+        }
 
         QWidget {
         background-color: #eeeeee;

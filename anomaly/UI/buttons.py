@@ -89,8 +89,4 @@ class Buttons(QGridLayout):
     def mode_clicked(self, controllerHandle):
         controllerHandle.set_mode()
         self.button_mode.setText(controllerHandle.get_mode())
-    def appendVal(self, value):
-        from anomaly.__main__ import applicationController as aCon
-        aCon.appendNumber(value)
-
   
