@@ -10,39 +10,39 @@ DARKMODE = """QTextEdit {
         background-color: transparent; 
         outline: none; 
         border: 2px solid #585858;
-        border-radius: 4px; 
         margin: 4px;
         padding: 4px;}
 
         QPushButton:hover {
-        border:2px solid red;
+        border:2px solid #808080;
         }
 
         QWidget {
         background-color: #1c1c1c;
         color: #d0d0d0;
+        border-radius: 4px;
         }"""
 
 LIGHTMODE = """QTextEdit {
-        border: 2px solid #878787;
+        border: 2px solid #bcbcbc;
         border-radius: 4px;}
 
         QPushButton {
         font-size: 18px; 
         background-color: transparent; 
         outline: none; 
-        border: 2px solid #878787;
-        border-radius:4px;
+        border: 2px solid #bcbcbc;
         margin: 4px;
         padding: 4px;}
 
         QPushButton:hover {
-        border: 2px solid red;
+        border: 2px solid 878787;
         }
 
         QWidget {
         background-color: #eeeeee;
         color: #444444;
+        border-radius: 4px;
         }"""
 
 BUTTONDICT = {
