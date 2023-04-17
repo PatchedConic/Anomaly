@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QGridLayout, QWidget
 from anomaly.UI import UI
+from PyQt6 import QtGui
+
 
 class viewWindow(QWidget):
     def __init__(self, parent):
@@ -8,6 +10,7 @@ class viewWindow(QWidget):
         self.controllerHandle = parent
         self.resize(400,600)
         self.setWindowTitle("Anomaly Calc")
+        self.setWindowIcon(QtGui.QIcon('materialCalc.png'))
         self.layout = QGridLayout()
         self.setLayout(self.layout)
         self.UI = UI.UI(self, self.layout, self.controllerHandle)
