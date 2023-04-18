@@ -10,7 +10,8 @@ class viewWindow(QWidget):
         self.controllerHandle = parent
         self.resize(400,600)
         self.setWindowTitle("Anomaly Calc")
-        self.setWindowIcon(QtGui.QIcon('materialCalc.png'))
+        self.setWindowIcon(QtGui.QIcon("materialCalc.png"))
+        print
         self.layout = QGridLayout()
         self.setLayout(self.layout)
         self.UI = UI.UI(self, self.layout, self.controllerHandle)
