@@ -3,7 +3,9 @@ import unittest
 
 class stackTest(unittest.TestCase):
 
+
     def test_add(self):
+        """This tests the ability of the stack to accept new digits"""
         stack.add_digit("123", 4, '.', "567")
         self.assertEqual(stack.stack[-1], "1234.567", "Should be 1234.567")
     
