@@ -1,45 +1,44 @@
-stack = []
+class Stack():
+    def __init__(self):
+        self.stack = []
 
-def add_digit(*digits):
-    global stack
-    for digit in digits:
-        if len(stack) < 1: push()
-        if digit != '.':
-            stack[-1] += str(digit)
-        elif digit == '.' and '.' not in stack[-1]:
-            stack[-1] += str(digit)
-        else: pass
+    def add_digit(self, *digits):
+        for digit in digits:
+            if len(self.stack) < 1: self.add_number()
+            if digit != '.':
+                self.stack[-1] = self.stack[-1]+str(digit)
+            elif digit == '.' and '.' not in self.stack[-1]:
+                self.stack[-1] = self.stack[-1]+str(digit)
+            else: pass
 
-def push(*arg):
-    global stack
-    for i in arg:
-        stack.append(str(i))
-    stack.append('')
+    def add_number(self, *arg):
+        try:
+            for i in arg:
+                self.stack.append(str(i))
+            self.stack.append('')
+        except ValueError:
+            pass
 
-def return_stack(n=-1):
-    global stack
-    try:
-        return stack[n]
-    except IndexError:
-        return None
+    def pop(self):
+        try:
+            if self.stack[-1] == '': self.stack.pop()
+            return self.stack.pop()
+        except:
+            return None
 
-def pop():
-    global stack
-    try:
-        return stack.pop()
-    except:
-        pass
+    def delete_digit(self):
+        if self.stack[-1] != '':
+            self.stack[-1] = self.stack[-1][:len(self.stack[-1])-1]
+        else:
+            pass
 
-def delete():
-    global stack
-    if stack[-1] != '':
-        stack[-1] = stack[-1][:len(stack[-1])-1]
-    else:
-        pass
-
-def clear(whole_stack=False):
-    global stack
-    if stack[-1] != '' or [] and whole_stack != True:
-        stack[-1] = ''
-    else:
-        stack = []
+    def clear(self):
+        try:
+            if self.stack[-1] != '':
+                self.stack[-1] = ''
+            elif self.stack[-1] == '':
+                self.stack = []
+            else:
+                pass
+        except IndexError:
+            pass
