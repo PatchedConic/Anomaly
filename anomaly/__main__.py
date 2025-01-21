@@ -1,14 +1,7 @@
 import argparse
 from .calculator import Calculator
 from .calculator import FUNCTIONS
-
-def is_float(*values: str) -> bool:
-    for value in values:
-        try:
-            float(value)
-            pass
-        except: return False
-    return True
+from common import *
 
 def main():
 

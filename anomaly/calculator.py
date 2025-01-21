@@ -1,7 +1,6 @@
 import math
-import re
-
-CHARS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."]
+from .common import *
+# CHARS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."]
 
 class Calculator:
     def __init__(self):
@@ -74,13 +73,6 @@ class Calculator:
         else:
             raise Exception(f"Invalid signal sent: {signal}")
         
-def is_float(*values: str) -> bool:
-    for value in values:
-        try:
-            float(value)
-        except ValueError:
-            return False
-    return True
 
 def sum(calc: Calculator) -> None:
     a = calc.pop(1)
