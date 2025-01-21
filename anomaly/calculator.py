@@ -9,6 +9,9 @@ class Calculator:
         self.buffer = ""
         self.listeners = []
 
+    def get_stack(self) -> list:
+        return self.stack
+
     def push(self, *values: float) -> None:
         for value in values:
             if value != "":
