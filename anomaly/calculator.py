@@ -21,10 +21,10 @@ class Calculator:
         return
         
     def pop(self, position: int = 0) -> float | None:
-        if self.stack[position] != None:
+        try:
             return self.stack.pop(position)
-        else:
-            return
+        except IndexError:
+            return None
         
     def enter(self) -> None:
         if self.buffer != "":
@@ -35,16 +35,16 @@ class Calculator:
             return
         
     def peek(self, position: int = 0) -> float | None:
-        if self.stack[position] != None:
+        try:
             return self.stack[position]
-        else:
+        except IndexError:
             return None
     
     def get_buffer(self) -> str | None:
         if self.buffer != "":
             return self.buffer
         else:
-            return None
+            return str(self.peek())
         
     def add_listener(self, func_pointer: object) -> None:
         self.listeners.append(func_pointer)
