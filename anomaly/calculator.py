@@ -175,6 +175,54 @@ def invert(calc: Calculator) -> None:
         return
     else:
         return
+    
+def sin(calc: Calculator) -> None:
+    a = calc.pop()
+    if a != None:
+        calc.push(math.sin(a))
+        return
+    else:
+        return
+    
+def cos(calc: Calculator) -> None:
+    a = calc.pop()
+    if a != None:
+        calc.push(math.cos(a))
+        return
+    else:
+        return
+    
+def tan(calc: Calculator) -> None:
+    a = calc.pop()
+    if a != None:
+        calc.push(math.tan(a))
+        return
+    else:
+        return
+
+def asin(calc: Calculator) -> None:
+    a = calc.pop()
+    if a != None:
+        calc.push(math.asin(a))
+        return
+    else:
+        return
+    
+def acos(calc: Calculator) -> None:
+    a = calc.pop()
+    if a != None:
+        calc.push(math.acos(a))
+        return
+    else:
+        return
+    
+def atan(calc: Calculator) -> None:
+    a = calc.pop()
+    if a != None:
+        calc.push(math.atan(a))
+        return
+    else:
+        return
 
 FUNCTIONS = {
     "sum": sum,
@@ -188,7 +236,13 @@ FUNCTIONS = {
     "square": square,
     "pi": pi,
     "natural_exponent": nat_exp,
-    "invert": invert
+    "invert": invert,
+    "sin": sin,
+    "cos": cos,
+    "tan": tan,
+    "asin": asin,
+    "acos": acos,
+    "atan": atan
 }
 
 # def sin(item) -> float:
