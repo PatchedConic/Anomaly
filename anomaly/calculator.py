@@ -1,141 +1,342 @@
 import math
-import re
+from .common import *
 
-CHARS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."]
+# CHARS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."]
 
 class Calculator:
+    """
+    The core calculator class.
+    
+    Methods:
+        get_stack(None): returns the calculator's stack as a list.
+        
+        push(*values): pushes *values to the calculator's stack.
+
+        pop(a): pops the value at index a from the calculator's stack and returns
+        it.
+
+        peek(a): returns the value in the calculators stack at index a without
+        altering the stack.
+
+        enter(): pushes the value on the calculator's buffer onto the stack.
+
+        add_listener(function): adds function to the calculator's listeners to be called
+        during an update.
+
+        get_buffer(): returns the calculator's current buffer string.
+
+        notify_listeners(): calls all functions in the calculator's listeners list.
+
+        receive(signal): takes a char or operand and adds it to the buffer string or 
+        calls the relevant operator as appropriate.
+        """
     def __init__(self):
         self.stack = []
         self.buffer = ""
         self.listeners = []
+        self.mode = 'radians'
 
     def get_stack(self) -> list:
+        """
+        Return stack as list
+
+        Args: 
+            none
+        
+        Returns:
+            list: calculator stack
+        """
         return self.stack
 
     def push(self, *values: float) -> None:
-        for value in values:
-            if value != "":
-                self.stack.insert(0, value)
-            else:
+        """
+        Add values to stack.
+        
+        Args:
+            *float: value to add to stack
+            
+        Returns:
+            none
+        """
+        for value in values:    #Loop through arguments
+            try:
+                self.stack.insert(0, float(value))  #Add value to stack
+            except:   #If not valid, do nothing
                 pass
         return
         
     def pop(self, position: int = 0) -> float | None:
-        if self.stack[position] != None:
-            return self.stack.pop(position)
-        else:
-            return
+        """
+        Pop value from stack
+
+        Args:
+            int: index to pop. Defaults to 0.
+
+        Returns:
+            float: value in stack at position specified.
+        """
+        try:
+            return self.stack.pop(position) #If stack position exists, pop and return
+        except IndexError:  #If index does not exist, do nothing
+            return None
         
     def enter(self) -> None:
-        if self.buffer != "":
-            self.push(float(self.buffer))
-            self.buffer = ""
+        """
+        Push buffer onto stack.
+
+        Args:
+            none
+        
+        Returns:
+            none
+        """
+        if self.buffer != "":   #Check that buffer is not empty
+            self.push(float(self.buffer))   #Push buffer to stack
+            self.buffer = ""    #Clear buffer
             return
-        else:
-            return
+        
+        return
         
     def peek(self, position: int = 0) -> float | None:
-        if self.stack[position] != None:
-            return self.stack[position]
-        else:
-            return None
+        """
+        Peek at stack.
+
+        Args:
+            position (int): index of stack. Defaults to 0.
+
+        Returns:
+            float: value of stack at position.
+        """
+        try:
+            return self.stack[position] #Return stack value if it exists
+        except IndexError:
+            return None #If it doesn't exists, return None
     
     def get_buffer(self) -> str | None:
-        if self.buffer != "":
+        """
+        Return buffer.
+
+        Args:
+            none
+        
+        Returns:
+            string: Buffer string
+        """
+        if self.buffer != "":   #Return buffer if it is not empty
             return self.buffer
-        else:
-            return None
+        else:   #Else return first element in stack
+            return str(self.peek())
         
     def add_listener(self, func_pointer: object) -> None:
-        self.listeners.append(func_pointer)
+        """
+        Add listener function.
+
+        Args:
+            func_pointer (function): function pointer.
+
+        Returns:
+            none.
+        """
+        self.listeners.append(func_pointer) #Append function_pointer to listeners
         return
     
     def notify_listeners(self) -> None:
-        for i in self.listeners:
-            i()
+        """
+        Call listener functions.
+
+        Args:
+            none
+        
+        Returns:
+            none
+        """
+        for i in self.listeners:    #Loop through listeners list
+            i() #Call each function
         return
     
-    def receive(self, signal: str) -> None:
-        if is_float(signal) == True:
-            if "." in signal:
-                if "." not in self.buffer:
-                    self.buffer += signal
+    def receive(self, *signals: str) -> None:
+        """
+        Receive a char or operator and compute.
+
+        Args:
+            *signals (str): Char or operator string.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: invalid char or operator.
+        """
+        for signal in signals:
+            if is_float(signal) == True:
+                if "." in signal:
+                    if "." not in self.buffer:
+                        self.buffer += signal
+                    else:
+                        pass
                 else:
-                    pass
+                    self.buffer += signal
+                self.notify_listeners()
+                return
+            elif signal in FUNCTIONS.keys():
+                # self.enter()
+                FUNCTIONS[signal](self)
+                self.notify_listeners()
+                return
             else:
-                self.buffer += signal
-            self.notify_listeners()
-            return
-        elif signal in FUNCTIONS.keys():
-            self.enter()
-            FUNCTIONS[signal](self)
-            self.notify_listeners()
-            return
-        else:
-            raise Exception(f"Invalid signal sent: {signal}")
+                raise Exception(f"Invalid signal sent: {signal}")
         
-def is_float(*values: str) -> bool:
-    for value in values:
-        try:
-            float(value)
-        except ValueError:
-            return False
-    return True
 
 def sum(calc: Calculator) -> None:
+    """
+    Add two values in stack.
+
+    Args:
+        calc (Calculator): Active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 2:
+        return None
+    
     a = calc.pop(1)
     b = calc.pop()
-    if a != None and b != None:
+
+    if a is not None and b is not None:
         calc.push(a+b)
         return
-    else:
+    
+    return
+
+def subtract(calc: Calculator) -> None:
+    """
+    Subtract two values in stack.
+
+    Args:
+        calc (Calculator): Active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 2:
         return
     
-def subtract(calc: Calculator) -> None:
     a = calc.pop(1)
     b = calc.pop()
-    if a != None and b != None:
+
+    if a is not None and b is not None:
         calc.push(a-b)
         return
-    else:
-        return
+    
+    return
 
 def multiply(calc: Calculator) -> None:
+    """
+    Multiply two values in stack.
+
+    Args:
+        calc (Calculator): Active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 2:
+        return
+    
     a = calc.pop(1)
     b = calc.pop()
     if a != None and b != None:
         calc.push(a*b)
         return
-    else:
-        return
+    return
     
 def divide(calc: Calculator) -> None:
+    """
+    Divide two values in stack.
+
+    Args:
+        calc (Calculator): Active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 2:
+        return
+    
     a = calc.pop(1)
     b = calc.pop()
+
     if a != None and b != None:
-        calc.push(a/b)
-        return
-    else:
-        return
+        if b != math.nan:
+            try:
+                calc.push(a/b)
+                return
+            except ZeroDivisionError:
+                calc.push(math.nan)
+                return
+        else:
+            calc.push(math.nan)
+            return
+
+    return
 
 def power(calc: Calculator) -> None:
+    """
+    Raise value to power
+    
+    Args:
+        calc (Calculator): Active calculator"""
+    if calc.buffer != "":
+        calc.enter()
+    
+    if len(calc.get_stack()) < 2:
+        return
+    
     a = calc.pop(1)
     b = calc.pop()
     if a != None and b != None:
         calc.push(math.pow(a, b))
         return
-    else:
-        return
+    
+    return
 
 def negate(calc: Calculator) -> None:
-    a = calc.pop()
-    if a != None:
-        calc.push(-1*a)
-        return
-    else:
+    """
+    Negate buffer or stack value.
+
+    Args:
+        calc (Calculator): Active calculator
+    """
+
+    if calc.buffer != "":
+        if calc.buffer.startswith("-"):
+            calc.buffer = "-" + calc.buffer
+            return
+        calc.buffer =  calc.buffer.lstrip("-")
         return
     
+    a = calc.pop()
+    if a is not None:
+        calc.push(-1*a)
+        return
+    
+    return
+
+    
 def swap(calc: Calculator) -> None:
+    """
+    Swap stack values.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 2:
+        return
+    
     a = calc.pop(1)
     b = calc.pop()
     if a != None and b != None:
@@ -145,257 +346,260 @@ def swap(calc: Calculator) -> None:
         return
     
 def sqrt(calc: Calculator) -> None:
+    """Take the square root.
+    
+    Args:
+        calc (Calculator): active calculator"""
+    if calc.buffer != "":
+        calc.enter()
+    if len(calc.get_stack()) < 1:
+        return
+    
     a = calc.pop()
     if a != None:
         calc.push(math.sqrt(a))
         return
-    else:
-        return
+    return
 
 def square(calc: Calculator) -> None:
+    """
+    Square value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+
     a = calc.pop()
     if a != None:
         calc.push(math.pow(a, 2))
         return
-    else: 
-        return
+    return
         
 def pi(calc: Calculator) -> None:
+    """
+    Push Pi onto stack.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
     calc.push(math.pi)
     return
 
 def nat_exp(calc: Calculator) -> None:
+    """
+    Push e onto stack.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
     calc.push(math.e)
     return
 
 def invert(calc: Calculator) -> None:
+    """
+    Invert top value in stack.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+    if len(calc.get_stack()) < 1:
+        return
+    
     a = calc.pop()
     if a != None:
         calc.push(1/a)
         return
-    else:
+    return
+    
+def sin(calc: Calculator) -> None:
+    """
+    Take the sin of value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
         return
+    
+    a = calc.pop()
+    if a != None:
+        if calc.mode == 'radians':
+            calc.push(math.sin(a))
+            return
+        calc.push(math.sin(a*2*math.pi/360))
+        return
+    return
+    
+def cos(calc: Calculator) -> None:
+    """
+    Take the cos of value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+        
+    a = calc.pop()
+    if a != None:
+        if calc.mode == 'radians':
+            calc.push(math.cos(a))
+            return
+        calc.push(math.cos(a*2*math.pi/360))
+        return
+    return
+    
+def tan(calc: Calculator) -> None:
+    """
+    Take the tab of value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+        
+    a = calc.pop()
+    if a != None:
+        if calc.mode == 'radians':
+            calc.push(math.tan(a))
+            return
+        calc.push(math.tan(a*2*math.pi/360))
+        return
+    return
+
+def asin(calc: Calculator) -> None:
+    """
+    Take the asin of value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+        
+    a = calc.pop()
+    if a != None:
+        if calc.mode == 'radians':
+            calc.push(math.asin(a))
+            return
+        calc.push(math.asin(a)*360/(2*math.pi))
+        return
+    
+    return
+    
+def acos(calc: Calculator) -> None:
+    """
+    Take the acos of value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+        
+    a = calc.pop()
+    if a != None:
+        if calc.mode == 'radians':
+            calc.push(math.acos(a))
+            return
+        calc.push(math.acos(a)*360/(2*math.pi))
+        return
+    return
+    
+def atan(calc: Calculator) -> None:
+    """
+    Take the atan of value.
+
+    Args:
+        calc (Calculator): active calculator
+    """
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+        
+    a = calc.pop()
+    if a != None:
+        if calc.mode == 'radians':
+            calc.push(math.atan(a))
+            return
+        calc.push(math.atan(a)*360/(2*math.pi))
+        return
+    return
+    
+def ln(calc: Calculator) -> None:
+    """Take the natural log of value.
+    
+    Args:
+        calc (Calculator): active calculator"""
+    if calc.buffer != "":
+        calc.enter()
+
+    if len(calc.get_stack()) < 1:
+        return
+    a = calc.pop()
+    if a is not None:
+        calc.push(math.log(a))
+        return
+    return 
+
 
 FUNCTIONS = {
     "sum": sum,
+    "+": sum,
     "subtract": subtract,
+    "-": subtract,
     "multiply": multiply,
+    "x": multiply,
     "divide": divide,
+    "/": divide,
     "power": power,
     "negate": negate,
+    "n": negate,
     "swap": swap,
+    "s": swap,
     "sqrt": sqrt,
     "square": square,
     "pi": pi,
     "natural_exponent": nat_exp,
-    "invert": invert
+    "e": nat_exp,
+    "invert": invert,
+    "i": invert,
+    "sin": sin,
+    "cos": cos,
+    "tan": tan,
+    "asin": asin,
+    "acos": acos,
+    "atan": atan,
+    "ln": ln
 }
-
-# def sin(item) -> float:
-#     try:
-#         if item.trigMode == 'radians':
-#             theta = item.pop()
-#             if theta % math.pi == 0: return 0
-#             else: return math.sin(theta)
-#         elif item.trigMode == 'degrees':
-#             return sind(item)
-#         else: raise Exception("Holy fuck")
-#     except:
-#         raise Exception("Holy fuck")
-
-# def cos(item) -> float:
-#     try:
-#         if item.trigMode == 'radians':
-#             theta = item.pop()
-#             if (theta+math.pi/2) % (math.pi) == 0: return 0
-#             else: return math.cos(theta)
-#         elif item.trigMode == 'degrees':
-#             return cosd(item)
-#     except:
-#         pass
-
-# def tan(item) -> float:
-#     try:
-#         if item.trigMode == 'radians':
-#             theta = item.pop()
-#             if (theta+math.pi/2) % math.pi == 0: return math.nan
-#             elif (theta % math.pi) == 0: return 0
-#             else: return math.tan(theta)
-#         elif item.trigMode == 'degrees':
-#             return tand(item)
-#     except:
-#         pass
-
-# def sind(item) -> float:
-#     try:
-#         theta = item.pop()
-#         if theta % 180 == 0:
-#             return 0
-#         else:
-#             return math.sin(theta*2*math.pi/360)
-#     except:
-#         pass
-
-# def cosd(item) -> float:
-#     try:
-#         theta = item.pop()
-#         if (theta+90) % 180 == 0: return 0
-#         else:
-#             return sin(theta*2*math.pi/360)
-#     except:
-#         pass
-
-# def tand(item) -> float:
-#     try:
-#         theta = item.pop()
-#         if (theta + 90) % 180 == 0: return math.nan
-#         elif theta % 180 == 0: return 0
-#         else:
-#             return tan(theta*2*math.pi/360)
-#     except:
-#         pass
-
-# def asin(item) -> float:
-#     try:
-#         if item.trigMode == 'radians':
-#             return math.asin(item.pop())
-#         elif item.trigMode == 'degrees':
-#             return asind(item)
-#     except:
-#         raise Exception
-
-# def acos(item) -> float:
-#     try:
-#         if item.trigMode == 'radians':
-#             return math.acos(item.pop())
-#         elif item.trigMode == 'degrees':
-#             return acosd(item)
-#     except:
-#         pass
-
-# def atan(item) -> float:
-#     try:
-#         if item.trigMode == 'radians':
-#             return math.atan(item.pop())
-#         elif item.trigMode == 'degrees':
-#             return atand(item)
-#     except:
-#         pass
-
-# def asind(item) -> float:
-#     try:
-#         return (math.asin(item.pop())*360/(math.pi*2))
-#     except:
-#         pass
-
-# def acosd(item) -> float:
-#     try:
-#         return math.acos(item.pop())*360/(math.pi*2)
-#     except:
-#         pass
-
-# def atand(item) -> float:
-#     try:
-#         return math.atan(item.pop())*360/(math.pi*2)
-#     except:
-#         pass
-
-# def addition(item) -> float:
-#     if len(item)>1 : return item.pop() + item.pop()
-#     else:
-#         pass
-
-# def subtract(item) -> float:
-#     if len(item)>1 : return item.pop(1)-item.pop()
-#     else:
-#         pass
-
-# def multiply(item) -> float:
-#     if len(item)>1 : return item.pop() * item.pop()
-#     else:
-#         pass
-
-# def divide(item) -> float:
-#     if len(item)>1 : 
-#         return (item.pop(1) / item.pop())
-#     else:
-#         pass
-# def negate(item) -> float:
-#     if len(item) > 0: return item.pop()*-1
-#     else:
-#         pass
-
-# def factorial(item) -> int:
-#     if len(item) > 0:
-#         try:
-#             return math.factorial(int(item.pop()))
-#         except:
-#             pass
-#     else: pass
-
-# def power(item) -> float:
-#     if len(item) > 1:
-#         return math.pow(item.pop(1), item.pop())
-#     else: pass
-
-# def invert(item) -> float:
-#     if len(item) > 0:
-#         return 1/item.pop() 
-#     else: pass
-
-# def square(item) -> float:
-#     if len(item) > 0:
-#         return math.pow(item.pop(), 2)
-#     else: pass
-
-# def sqrt(item) -> float:
-#     if len(item) > 0:
-#         return math.sqrt(item.pop())
-#     else: pass
-
-# def pi(item) -> float:
-#     return math.pi
-
-# def e(item) -> float:
-#     return math.e
-
-# def log(item) -> float:
-#     if len(item) > 0:
-#         return math.log(item.pop())
-#     else: pass
-
-# def swap(item) -> None:
-#     if len(item) > 1:
-#         first = item.pop()
-#         second = item.pop()
-#         item.push(first, second)
-
-
-# FUNCTIONS_DICT = {
-#     "+":funcs.addition,
-#     "-":funcs.subtract,
-#     "*":funcs.multiply,
-#     "/":funcs.divide,
-#     "negate":funcs.negate,
-#     "!":funcs.factorial,
-#     "^":funcs.power,
-#     "invert":funcs.invert,
-#     "sin":funcs.sin,
-#     "cos":funcs.cos,
-#     "tan":funcs.tan,
-#     "sind":funcs.sind,
-#     "cosd":funcs.cosd,
-#     "tand":funcs.tand,
-#     "asin":funcs.asin,
-#     "acos":funcs.acos,
-#     "atan":funcs.atan,
-#     "asind":funcs.asind,
-#     "acosd":funcs.acosd,
-#     "atand":funcs.atand,
-#     "square":funcs.square,
-#     "sqrt":funcs.sqrt,
-#     "log":funcs.log,
-#     "e":funcs.e,
-#     "pi":funcs.pi,
-#     "swap": funcs.swap
-# }

@@ -1,23 +1,27 @@
 import argparse
 from .calculator import Calculator
-
-def is_float(*values: str) -> bool:
-    for value in values:
-        try:
-            float(value)
-            pass
-        except: return False
-    return True
+from .calculator import FUNCTIONS
+from .common import *
 
 def main():
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description= """A basic RPN calculator. CLI functionality can be obtained by passing a space
+                                     seperated series of numbers or operators as arguments.""")
 
     parser.add_argument('arguments', nargs = "*")
-
+    parser.add_argument("-l", "--list", help = "Displays a list of possible operations", action = 'store_true')
+    parser.add_argument("-d", "--degrees", help = "Set calculator to degree mode.", action = "store_true")
     args = parser.parse_args()
 
     calc = Calculator()
+
+    if args.list:
+        for entry in FUNCTIONS.keys():
+            print(entry)
+        return
+    
+    if args.degrees:
+        calc.mode = 'degrees'
 
     for value in args.arguments:
         if is_float(value) == True:
