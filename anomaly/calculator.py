@@ -80,6 +80,9 @@ def sum(calc: Calculator) -> None:
     if a != None and b != None:
         calc.push(a+b)
         return
+    elif b != None:
+        calc.push(b)
+        return
     else:
         return
     
@@ -218,17 +221,25 @@ def atan(calc: Calculator) -> None:
 
 FUNCTIONS = {
     "sum": sum,
+    "+": sum,
     "subtract": subtract,
+    "-": subtract,
     "multiply": multiply,
+    "x": multiply,
     "divide": divide,
+    "/": divide,
     "power": power,
     "negate": negate,
+    "n": negate,
     "swap": swap,
+    "s": swap,
     "sqrt": sqrt,
     "square": square,
     "pi": pi,
     "natural_exponent": nat_exp,
+    "e": nat_exp,
     "invert": invert,
+    "i": invert,
     "sin": sin,
     "cos": cos,
     "tan": tan,

@@ -1,7 +1,7 @@
 import argparse
 from .calculator import Calculator
 from .calculator import FUNCTIONS
-from common import *
+from .common import *
 
 def main():
 
