@@ -269,8 +269,12 @@ def divide(calc: Calculator) -> None:
 
     if a != None and b != None:
         if b != math.nan:
-            calc.push(a/b)
-            return
+            try:
+                calc.push(a/b)
+                return
+            except ZeroDivisionError:
+                calc.push(math.nan)
+                return
         else:
             calc.push(math.nan)
             return
