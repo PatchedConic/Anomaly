@@ -10,6 +10,7 @@ def main():
 
     parser.add_argument('arguments', nargs = "*")
     parser.add_argument("-l", "--list", help = "Displays a list of possible operations", action = 'store_true')
+    parser.add_argument("-d", "--degrees", help = "Set calculator to degree mode.", action = "store_true")
     args = parser.parse_args()
 
     calc = Calculator()
@@ -18,6 +19,9 @@ def main():
         for entry in FUNCTIONS.keys():
             print(entry)
         return
+    
+    if args.degrees:
+        calc.mode = 'degrees'
 
     for value in args.arguments:
         if is_float(value) == True:
