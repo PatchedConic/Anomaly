@@ -3,6 +3,11 @@
 Hi there. Thanks for checking out the Anomaly Calculator, a simple,
 cross platform RPN calculator.
 
+## Running Anomaly as TUI
+Anomaly can be run in TUI mode by adding the `-t` flag:
+```
+python3 -m anomaly -t
+```
 ## Running Anomaly as CLI
 Anomaly can be run as a CLI utility by navigating to this repo's root
 folder in a terminal application and typing:
