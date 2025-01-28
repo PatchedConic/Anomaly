@@ -35,6 +35,7 @@ class Calculator:
         self.buffer = ""
         self.listeners = []
         self.mode = 'radians'
+        self.history = []
 
     def get_stack(self) -> list:
         """
@@ -61,6 +62,7 @@ class Calculator:
         for value in values:    #Loop through arguments
             try:
                 self.stack.insert(0, float(value))  #Add value to stack
+                self.history.append(str(value))
             except:   #If not valid, do nothing
                 pass
         return
@@ -97,7 +99,7 @@ class Calculator:
         
         return
         
-    def peek(self, position: int = 0) -> float | None:
+    def peek(self, position: int = 0) -> str:
         """
         Peek at stack.
 
@@ -107,11 +109,19 @@ class Calculator:
         Returns:
             float: value of stack at position.
         """
+        if self.buffer != "":
+            if position > 0:
+                try: 
+                    return str(self.stack[position-1])
+                except IndexError:
+                    return "---"
+            return self.buffer
+        
         try:
-            return self.stack[position] #Return stack value if it exists
+            return(str(self.stack[position]))
         except IndexError:
-            return None #If it doesn't exists, return None
-    
+            return "---"
+
     def get_buffer(self) -> str | None:
         """
         Return buffer.
@@ -168,7 +178,7 @@ class Calculator:
             Exception: invalid char or operator.
         """
         for signal in signals:
-            if is_float(signal) == True:
+            if is_float(signal) == True or signal == '.':
                 if "." in signal:
                     if "." not in self.buffer:
                         self.buffer += signal
@@ -181,6 +191,7 @@ class Calculator:
             elif signal in FUNCTIONS.keys():
                 # self.enter()
                 FUNCTIONS[signal](self)
+                self.history.append(signal)
                 self.notify_listeners()
                 return
             else:
@@ -573,6 +584,19 @@ def ln(calc: Calculator) -> None:
         return
     return 
 
+def enter(calc: Calculator) -> None:
+    if calc.buffer != "":
+        calc.enter()
+        return
+    
+    return
+
+def clear(calc: Calculator) -> None:
+    if calc.buffer != "":
+        calc.buffer = ""
+        return
+    calc.stack = []
+    return
 
 FUNCTIONS = {
     "sum": sum,
@@ -601,5 +625,7 @@ FUNCTIONS = {
     "asin": asin,
     "acos": acos,
     "atan": atan,
-    "ln": ln
+    "ln": ln,
+    "enter": enter,
+    "clear": clear
 }

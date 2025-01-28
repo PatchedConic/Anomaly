@@ -1,0 +1,34 @@
+Screen {
+    layout: horizontal;
+}
+
+.box {
+    height: 1fr;
+    border: solid green;
+}
+
+.register {
+    text-align: right;
+    border: solid blue;
+}
+
+.register_stack {
+    height: 50%;
+    border: solid green;
+    align-vertical: bottom;
+}
+
+.shortcut_panel {
+    border: solid green;
+    height: 50%;
+}
+
+.compute_stack {
+    width: 50%;
+    border: solid white;
+}
+
+.trace {
+    width: 50%;
+    border: solid white;
+}
