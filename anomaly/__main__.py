@@ -2,7 +2,7 @@ import argparse
 from .calculator import Calculator
 from .calculator import FUNCTIONS
 from .common import *
-from .GUI import GUI_Application
+# from .GUI import GUI_Application
 from .TUI import TUI_App
 def main():
 
@@ -37,8 +37,8 @@ def main():
         print(calc.get_stack())
 
     if args.GUI:
-        app = GUI_Application(calc)
-        app.window.mainloop()
+        # app = GUI_Application(calc)
+        # app.window.mainloop()
         return
     if args.TUI:
         app = TUI_App(calc)

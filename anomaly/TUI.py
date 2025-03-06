@@ -2,7 +2,6 @@ from textual.app import App
 from textual.widgets import Header, Static, Digits, Placeholder, Footer
 from textual.containers import Vertical
 from .calculator import Calculator
-from .TUI_Shortcuts import ShortcutsPanel
 from .TUI_Trace import Trace
 
 class TUI_App(App):
@@ -46,33 +45,7 @@ class TUI_App(App):
     def __init__(self, calc: Calculator):
         super().__init__()
         self.calc = calc
-        self.calc.add_listener(self.update)
-
-        self.t = Digits(classes = "register", id = "t_register", value = self.calc.peek(3))
-        self.t.border_title = "T REGISTER"
-        self.z = Digits(classes = "register", id = "z_register", value = self.calc.peek(2))
-        self.z.border_title = "Z REGISTER"
-        self.y = Digits(classes = "register", id = "y_register", value = self.calc.peek(1))
-        self.y.border_title = "Y REGISTER"
-        self.x = Digits(classes= "register", id = "x_register", value = self.calc.peek())
-        self.x.border_title = "X REGISTER"
-
-        self.register_stack = Vertical(self.t,
-                                        self.z,
-                                        self.y,
-                                        self.x,
-                                        classes = "register_stack")
-        self.register_stack.border_title = "REGISTERS"
-        
-
-        self.shortcut_panel = Placeholder(classes = "shortcut_panel")
-        self.shortcut_panel.border_title = "SHORTCUTS"
-
-        self.compute_stack = Vertical(self.register_stack,
-                                        self.shortcut_panel,
-                                        classes = "compute_stack")
-        self.compute_stack.border_title = "COMPUTE"
-
+        self.compute_stack = ComputeStack(self.calc)
         self.trace = Trace()
         
 
@@ -87,12 +60,47 @@ class TUI_App(App):
         self.title = "Anomaly"
         self.sub_title = "An RPN calculator"
 
-    def update(self):
-        self.x.update(self.calc.peek())
-        self.y.update(self.calc.peek(1))
-        self.z.update(self.calc.peek(2))
-        self.t.update(self.calc.peek(3))
-        self.trace.update(self.calc)
 
     def action_signal(self, signal: str) -> None:
         self.calc.receive(signal)
+
+class ComputeStack(Vertical):
+    def __init__(self, calc: Calculator, **kwargs):
+        super().__init__(classes = "compute_stack", **kwargs)
+        self.calc = calc
+        self.border_title = "COMPUTE"
+        self.register_stack = RegisterStack(self.calc)
+        self.shortcuts = ShortcutPanel()
+
+    def on_mount(self):
+        self.mount(self.register_stack, self.shortcuts)
+
+class ShortcutPanel(Placeholder):
+    def __init__(self, **kwargs):
+        super().__init__(classes = "shortcut_panel", **kwargs)
+        self.border_title = "SHORTCUTS"
+
+class RegisterStack(Vertical):
+    def __init__(self, calc: Calculator, **kwargs):
+        super().__init__(classes = "register_stack", **kwargs)
+        self.calc = calc
+        self.border_title = "REGISTERS"
+        self.t = Register(self.calc, "T REGISTER", 3)
+        self.z = Register(self.calc, "Z REGISTER", 2)
+        self.y = Register(self.calc, "Y REGISTER", 1)
+        self.x = Register(self.calc, "X REGISTER", 0)
+
+    def on_mount(self):
+        self.mount(self.x, self.y, self.z, self.t)
+
+class Register(Digits):
+    def __init__(self, calc: Calculator, border_title: str, index: int, **kwargs):
+        super().__init__("---", classes = "register", id = f"register_{index}", **kwargs)
+        self.calc = calc
+        self.index = index
+        self.calc.add_listener(self.update_value)
+        self.border_title = border_title
+        self.update(self.calc.peek(self.index))
+
+    def update_value(self):
+        self.update(self.calc.peek(self.index))
