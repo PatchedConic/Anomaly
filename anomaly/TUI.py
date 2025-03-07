@@ -1,8 +1,7 @@
 from textual.app import App
-from textual.widgets import Header, Static, Digits, Placeholder, Footer
+from textual.widgets import Header, Digits, Placeholder, Footer, Label
 from textual.containers import Vertical
 from .calculator import Calculator
-from .TUI_Trace import Trace
 
 class TUI_App(App):
     BINDINGS = [
@@ -16,29 +15,30 @@ class TUI_App(App):
         ("7", "signal('7')", ""),
         ("8", "signal('8')", ""),
         ("9", "signal('9')", ""),
-        ("0", "signal('10')", ""),
+        ("0", "signal('0')", ""),
         (".", "signal('.')", ""),
-        ("enter", "signal('enter')", ""),
-        ("space", "signal('enter')", ""),
-        ("*", "signal('multiply')", ""),
-        ("/", "signal('divide')", ""),
-        ("+", "signal('sum')", ""),
-        ("-", "signal('subtract')", ""),
-        ("s", "signal('sin')", ""),
-        ("c", "signal('cos')", ""),
-        ("t", "signal('tan')", ""),
-        ("S", "signal('asin')", ""),
-        ("C", "signal('acos')", ""),
-        ("T", "signal('atan')", ""),
-        ("^", "signal('power')", ""),
-        ("n", "signal('negate')", ""),
-        ("w", "signal('swap')", ""),
-        ("r", "signal('sqrt')", ""),
-        ("p", "signal('pi')", ""),
-        ("e", "signal('nat_exp')", ""),
-        ("i", "signal('invert')", ""),
-        ("l", "signal('ln')", ""),
-        ("escape", "signal('clear')", ""),
+        ("enter", "signal('enter')", "enter"),
+        ("space", "signal('enter')", "enter"),
+        ("*", "signal('multiply')", "Multiply"),
+        ("/", "signal('divide')", "Divide"),
+        ("+", "signal('sum')", "Add"),
+        ("-", "signal('subtract')", "Subtract"),
+        ("s", "signal('sin')", "sin"),
+        ("c", "signal('cos')", "cos"),
+        ("t", "signal('tan')", "tan"),
+        ("S", "signal('asin')", "asin"),
+        ("C", "signal('acos')", "acos"),
+        ("T", "signal('atan')", "atan"),
+        ("^", "signal('power')", "Power"),
+        ("n", "signal('negate')", "negate"),
+        ("w", "signal('swap')", "swap"),
+        ("r", "signal('sqrt')", "square root"),
+        ("p", "signal('pi')", "pi"),
+        ("e", "signal('nat_exp')", "natural exponent"),
+        ("i", "signal('invert')", "invert"),
+        ("l", "signal('ln')", "ln"),
+        ("escape", "signal('clear')", "clear"),
+        ("backspace", "signal('backspace')", "backspace"),
     ]
     CSS_PATH = "horizontal_layout.tcss"
      
@@ -46,7 +46,7 @@ class TUI_App(App):
         super().__init__()
         self.calc = calc
         self.compute_stack = ComputeStack(self.calc)
-        self.trace = Trace()
+        self.trace = Trace(self.calc)
         
 
     def compose(self):
@@ -54,7 +54,6 @@ class TUI_App(App):
         yield self.compute_stack
         yield self.trace
         yield Footer()
-        self.trace.update(self.calc)
 
     def on_mount(self):
         self.title = "Anomaly"
@@ -63,6 +62,25 @@ class TUI_App(App):
 
     def action_signal(self, signal: str) -> None:
         self.calc.receive(signal)
+
+class Trace(Vertical):
+    
+    def __init__(self, calc: Calculator):
+        super().__init__(classes = "trace")
+        self.border_title="TRACE"
+        self.calc = calc
+        self.calc.add_listener(self.update)
+
+    def clear(self) -> None:
+        for child in list(self.children):
+            print(f"Removing child {child}")
+            self.remove_children(selector='*')
+
+    def update(self) -> None:
+        self.clear()
+        for entry in self.calc.history:
+            self.mount(Label(entry))
+
 
 class ComputeStack(Vertical):
     def __init__(self, calc: Calculator, **kwargs):
@@ -91,7 +109,7 @@ class RegisterStack(Vertical):
         self.x = Register(self.calc, "X REGISTER", 0)
 
     def on_mount(self):
-        self.mount(self.x, self.y, self.z, self.t)
+        self.mount(self.t, self.z, self.y, self.x)
 
 class Register(Digits):
     def __init__(self, calc: Calculator, border_title: str, index: int, **kwargs):

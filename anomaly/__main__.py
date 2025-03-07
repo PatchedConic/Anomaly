@@ -45,5 +45,6 @@ def main():
         app.run()
         print(calc.stack)
         print(calc.buffer)
+        print(calc.history)
 if __name__ == "__main__":
     main()

@@ -189,14 +189,30 @@ class Calculator:
                 self.notify_listeners()
                 return
             elif signal in FUNCTIONS.keys():
-                # self.enter()
-                FUNCTIONS[signal](self)
-                self.history.append(signal)
-                self.notify_listeners()
+                try:
+                    FUNCTIONS[signal](self)
+                    self.notify_listeners()
+                except ValueError:
+                    self.history.append("Math domain error")
+                    self.buffer = ""
+                    self.notify_listeners()
                 return
             else:
                 raise Exception(f"Invalid signal sent: {signal}")
         
+
+def backspace(calc: Calculator) -> None:
+    """
+    Delete char from buffer.
+    
+    Args:
+        calc (Calculator): active calculator
+    """
+    try:
+        calc.buffer = calc.buffer[:-1]        
+    except IndexError:
+        pass
+    return
 
 def sum(calc: Calculator) -> None:
     """
@@ -211,6 +227,7 @@ def sum(calc: Calculator) -> None:
     if len(calc.get_stack()) < 2:
         return None
     
+    calc.history.append("sum")
     a = calc.pop(1)
     b = calc.pop()
 
@@ -233,6 +250,7 @@ def subtract(calc: Calculator) -> None:
     if len(calc.get_stack()) < 2:
         return
     
+    calc.history.append("subtract")
     a = calc.pop(1)
     b = calc.pop()
 
@@ -255,6 +273,8 @@ def multiply(calc: Calculator) -> None:
     if len(calc.get_stack()) < 2:
         return
     
+    calc.history.append("multiply")
+
     a = calc.pop(1)
     b = calc.pop()
     if a != None and b != None:
@@ -275,6 +295,8 @@ def divide(calc: Calculator) -> None:
     if len(calc.get_stack()) < 2:
         return
     
+    calc.history.append("divide")
+
     a = calc.pop(1)
     b = calc.pop()
 
@@ -304,6 +326,8 @@ def power(calc: Calculator) -> None:
     if len(calc.get_stack()) < 2:
         return
     
+    calc.history.append("^")
+
     a = calc.pop(1)
     b = calc.pop()
     if a != None and b != None:
@@ -327,6 +351,8 @@ def negate(calc: Calculator) -> None:
         calc.buffer =  calc.buffer.lstrip("-")
         return
     
+    calc.history.append("negate")
+
     a = calc.pop()
     if a is not None:
         calc.push(-1*a)
@@ -348,6 +374,8 @@ def swap(calc: Calculator) -> None:
     if len(calc.get_stack()) < 2:
         return
     
+    calc.history.append("swap")
+
     a = calc.pop(1)
     b = calc.pop()
     if a != None and b != None:
@@ -366,6 +394,8 @@ def sqrt(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
     
+    calc.history.append("sqrt")
+
     a = calc.pop()
     if a != None:
         calc.push(math.sqrt(a))
@@ -384,6 +414,8 @@ def square(calc: Calculator) -> None:
 
     if len(calc.get_stack()) < 1:
         return
+
+    calc.history.append("square")
 
     a = calc.pop()
     if a != None:
@@ -429,6 +461,8 @@ def invert(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
     
+    calc.history.append("invert")
+
     a = calc.pop()
     if a != None:
         calc.push(1/a)
@@ -448,6 +482,8 @@ def sin(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
     
+    calc.history.append("sin")
+
     a = calc.pop()
     if a != None:
         if calc.mode == 'radians':
@@ -469,7 +505,9 @@ def cos(calc: Calculator) -> None:
 
     if len(calc.get_stack()) < 1:
         return
-        
+    
+    calc.history.append("cos")
+
     a = calc.pop()
     if a != None:
         if calc.mode == 'radians':
@@ -492,6 +530,8 @@ def tan(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
         
+    calc.history.append("tan")
+
     a = calc.pop()
     if a != None:
         if calc.mode == 'radians':
@@ -514,6 +554,8 @@ def asin(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
         
+    calc.history.append("asin")
+
     a = calc.pop()
     if a != None:
         if calc.mode == 'radians':
@@ -537,6 +579,8 @@ def acos(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
         
+    calc.history.append("acos")
+
     a = calc.pop()
     if a != None:
         if calc.mode == 'radians':
@@ -559,6 +603,8 @@ def atan(calc: Calculator) -> None:
     if len(calc.get_stack()) < 1:
         return
         
+    calc.history.append("atan")
+
     a = calc.pop()
     if a != None:
         if calc.mode == 'radians':
@@ -578,6 +624,9 @@ def ln(calc: Calculator) -> None:
 
     if len(calc.get_stack()) < 1:
         return
+    
+    calc.history.append("ln")
+
     a = calc.pop()
     if a is not None:
         calc.push(math.log(a))
@@ -627,5 +676,6 @@ FUNCTIONS = {
     "atan": atan,
     "ln": ln,
     "enter": enter,
-    "clear": clear
+    "clear": clear,
+    "backspace": backspace
 }
