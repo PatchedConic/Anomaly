@@ -1,6 +1,6 @@
 from textual.app import App
 from textual.widgets import Header, Digits, Placeholder, Footer, Label
-from textual.containers import Vertical
+from textual.containers import Vertical, VerticalScroll
 from .calculator import Calculator
 
 class TUI_App(App):
@@ -34,7 +34,7 @@ class TUI_App(App):
         ("w", "signal('swap')", "swap"),
         ("r", "signal('sqrt')", "square root"),
         ("p", "signal('pi')", "pi"),
-        ("e", "signal('nat_exp')", "natural exponent"),
+        ("e", "signal('natural_exponent')", "natural exponent"),
         ("i", "signal('invert')", "invert"),
         ("l", "signal('ln')", "ln"),
         ("escape", "signal('clear')", "clear"),
@@ -63,7 +63,7 @@ class TUI_App(App):
     def action_signal(self, signal: str) -> None:
         self.calc.receive(signal)
 
-class Trace(Vertical):
+class Trace(VerticalScroll):
     
     def __init__(self, calc: Calculator):
         super().__init__(classes = "trace")
@@ -78,6 +78,7 @@ class Trace(Vertical):
         self.clear()
         for entry in self.calc.history:
             self.mount(Label(entry))
+        self.scroll_end(animate=False)
 
 
 class ComputeStack(Vertical):

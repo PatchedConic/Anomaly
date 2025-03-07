@@ -31,4 +31,6 @@ Screen {
 .trace {
     width: 50%;
     border: solid white;
+    align-vertical: bottom;
+    text-align: right;
 }
