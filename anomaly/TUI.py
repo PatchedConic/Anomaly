@@ -72,9 +72,7 @@ class Trace(Vertical):
         self.calc.add_listener(self.update)
 
     def clear(self) -> None:
-        for child in list(self.children):
-            print(f"Removing child {child}")
-            self.remove_children(selector='*')
+        self.remove_children(selector='*')
 
     def update(self) -> None:
         self.clear()
