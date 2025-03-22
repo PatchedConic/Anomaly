@@ -1,5 +1,6 @@
 Screen {
     layout: horizontal;
+    height: 42;
 }
 
 .box {
@@ -13,24 +14,42 @@ Screen {
 }
 
 .register_stack {
-    height: 50%;
+    height: 22;
     border: solid green;
     align-vertical: bottom;
 }
 
 .shortcut_panel {
     border: solid green;
-    height: 50%;
+    height: 18;
 }
 
 .compute_stack {
-    width: 50%;
+    width: 72;
+    height:42;
     border: solid white;
 }
 
 .trace {
-    width: 50%;
+
     border: solid white;
     align-vertical: bottom;
+    text-align: right;
+}
+
+.shortcut_keys {
+    width: 50%;
+}
+
+.shortcut_values {
+    width: 50%;
+}
+
+.shortcut_key {
+    text-align: left;
+}
+
+.shortcut_value {
+    width: 100%;
     text-align: right;
 }

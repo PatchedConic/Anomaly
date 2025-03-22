@@ -1,6 +1,6 @@
 from textual.app import App
-from textual.widgets import Header, Digits, Placeholder, Footer, Label
-from textual.containers import Vertical, VerticalScroll
+from textual.widgets import Header, Digits, Footer, Label
+from textual.containers import Vertical, VerticalScroll, Horizontal
 from .calculator import Calculator
 
 class TUI_App(App):
@@ -92,10 +92,50 @@ class ComputeStack(Vertical):
     def on_mount(self):
         self.mount(self.register_stack, self.shortcuts)
 
-class ShortcutPanel(Placeholder):
+class ShortcutPanel(Horizontal):
+    KEYS = {
+        "ADD": "+",
+        "SUBTRACT": "-",
+        "MULTIPLY": "*",
+        "DIVIDE": "/",
+        "SIN": "s",
+        "COS": "c",
+        "TAN": "t",
+        "ASIN": "S",
+        "ACOS": "C",
+        "ATAN": "T",
+        "POWER": "^",
+        "NEGATE": "n",
+        "SWAP": "w",
+        "SQRT": "r",
+        "PI": "p",
+        "NATURAL_EXPONENT": "e",
+        "INVERT": "i",
+        "LN": "l",
+        "CLEAR": "escape",
+    }
+    class Keys(Vertical):
+        def __init__(self, **kwargs):
+            super().__init__(classes = "shortcut_keys", **kwargs)
+
+        def on_mount(self):    
+            for key in ShortcutPanel.KEYS.keys():
+                self.mount(Label(f"{key}:", classes = "shortcut_key"))
+    class Values(Vertical):
+        def __init__(self, **kwargs):
+            super().__init__(classes = "shortcut_values", **kwargs)
+            
+        def on_mount(self):    
+            for value in ShortcutPanel.KEYS.values():
+                self.mount(Label(value, classes= "shortcut_value"))
+                
     def __init__(self, **kwargs):
         super().__init__(classes = "shortcut_panel", **kwargs)
         self.border_title = "SHORTCUTS"
+        
+    def on_mount(self):
+        self.mount(self.Keys(), self.Values())
+        
 
 class RegisterStack(Vertical):
     def __init__(self, calc: Calculator, **kwargs):
