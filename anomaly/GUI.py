@@ -1,17 +1,32 @@
-from .calculator import Calculator
-from tkinter import *
-from tkinter import ttk
+from PyQt6.QtWidgets import QWidget, QMainWindow, QVBoxLayout, QPushButton
 
-class GUI_Application():
-    def __init__(self, calc: Calculator):
-        self.calc = calc
-        self.window = Tk()
-        # print(ttk.Style().theme_names())
-        # ttk.Style().theme_use("classic")
-        self.window.title("Anomaly")
-        self.label = ttk.Label(text = "Hello World")
-        self.label.pack()
+from PyQt6.QtCore import Qt
 
+class Anomaly(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
+        self.setWindowTitle("Epoch")
+        self.resize(320, 508)
+        self.setMinimumSize(320, 508)
 
+        self.centralWidget = QWidget()
+        self.centralWidget.setObjectName("central_widget")
+        self.layout = QVBoxLayout()
+        self.centralWidget.setLayout(self.layout)
+        self.setCentralWidget(self.centralWidget)
 
+        self.layout.addWidget(Register_Stack())
+        self.test_button = QPushButton("Test")
+        self.layout.addWidget(self.test_button)
+
+class Register_Stack(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("register_stack")
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        self.setFixedHeight(168)
+        self.setFixedWidth(280)
+        self.layout.addWidget(QPushButton("Test", objectName="register_0"))
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)

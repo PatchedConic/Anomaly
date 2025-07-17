@@ -1,0 +1,16 @@
+#central_widget{
+    padding: 2.5px;
+}
+
+#register_stack{
+    height: 168px;
+    width: 100%;
+    background-color: black;
+    border: solid red 5px;
+    border-radius: 5px;
+    margin: auto;
+}
+
+#register_0{
+    background-color: white;
+}

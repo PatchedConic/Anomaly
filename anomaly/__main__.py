@@ -2,7 +2,9 @@ import argparse
 from .calculator import Calculator
 from .calculator import FUNCTIONS
 from .common import *
-# from .GUI import GUI_Application
+from .GUI import Anomaly
+from PyQt6.QtWidgets import QApplication
+import sys
 from .TUI import TUI_App
 def main():
 
@@ -37,9 +39,14 @@ def main():
         print(calc.get_stack())
 
     if args.GUI:
-        # app = GUI_Application(calc)
-        # app.window.mainloop()
-        return
+        app = QApplication(sys.argv)
+        with open("anomaly/style.qss", "r") as f:
+            style = f.read()
+            app.setStyleSheet(style)
+        GUI = Anomaly()
+        GUI.show()
+        app.exec()
+
     if args.TUI:
         app = TUI_App(calc)
         app.run()
